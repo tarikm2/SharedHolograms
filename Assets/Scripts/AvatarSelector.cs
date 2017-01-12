@@ -2,7 +2,7 @@
 using Academy.HoloToolkit.Unity;
 
 /// <summary>
-/// Script to handle the user selecting the avatar to represent themself.
+/// Script to handle the user selecting the avatar.
 /// </summary>
 public class AvatarSelector : MonoBehaviour
 {
@@ -17,7 +17,9 @@ public class AvatarSelector : MonoBehaviour
     /// </summary>
     void OnSelect()
     {
-        
+        PlayerAvatarStore.Instance.DismissAvatarPicker();
+
+        LocalPlayerManager.Instance.SetUserAvatar(AvatarIndex);
     }
 
     void Start()

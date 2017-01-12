@@ -1,7 +1,5 @@
-﻿using Academy.HoloToolkit.Unity;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using Academy.HoloToolkit.Unity;
 
 /// <summary>
 /// Keeps track of the current state of the experience.
@@ -13,8 +11,10 @@ public class AppStateManager : Singleton<AppStateManager>
     /// </summary>
     public enum AppState
     {
-        WaitingForAnchor = 0,
+        Starting = 0,
+        WaitingForAnchor,
         WaitingForStageTransform,
+        PickingAvatar,
         Ready
     }
 
@@ -25,13 +25,24 @@ public class AppStateManager : Singleton<AppStateManager>
 
     void Start()
     {
-        CurrentAppState = AppState.WaitingForAnchor;
+        // We start in the 'picking avatar' mode.
+        CurrentAppState = AppState.PickingAvatar;
+
+        // We start by showing the avatar picker.
+        PlayerAvatarStore.Instance.SpawnAvatarPicker();
     }
 
     void Update()
     {
         switch (CurrentAppState)
         {
+            case AppState.PickingAvatar:
+                // Avatar picking is done when the avatar picker has been dismissed.
+                if (PlayerAvatarStore.Instance.PickerActive == false)
+                {
+                    CurrentAppState = AppState.WaitingForAnchor;
+                }
+                break;
             case AppState.WaitingForAnchor:
                 if (ImportExportAnchorManager.Instance.AnchorEstablished)
                 {
